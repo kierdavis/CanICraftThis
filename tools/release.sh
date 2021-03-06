@@ -19,4 +19,5 @@ git archive \
   --output="$root/release/$name-$version.zip" \
   "v$version" \
   "$name.txt" \
+  "LICENSE.txt" \
   $(find . -name '*.lua')
