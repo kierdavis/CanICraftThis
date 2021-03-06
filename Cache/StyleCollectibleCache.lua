@@ -1,5 +1,5 @@
 CanICraftThis.StyleCollectibleCache = {
-  version = 1,
+  version = 2,
 }
 
 function CanICraftThis.StyleCollectibleCache:open()
@@ -102,6 +102,10 @@ local function detectRecipes(collectibleName, subCategoryName)
   end
 end
 
+local function makeKey(style, recipe)
+  return style.id * 100 + recipe.id
+end
+
 function CanICraftThis.StyleCollectibleCache:populate()
   local data = self.data
   local categoryIndex
@@ -120,10 +124,9 @@ function CanICraftThis.StyleCollectibleCache:populate()
           local style = detectStyle(collectibleName)
           local recipes = detectRecipes(collectibleName, subCategoryName)
           if style ~= nil and recipes ~= nil then
-            if data[style.id] == nil then data[style.id] = {} end
             local recipe
             for _, recipe in ipairs(recipes) do
-              data[style.id][recipe.id] = collectibleId
+              self.data[makeKey(style, recipe)] = collectibleId
             end
           end
         end
@@ -145,7 +148,7 @@ function CanICraftThis.StyleCollectibleCache:verify()
     local recipe
     for _, recipe in pairs(CanICraftThis.EqRecipe.instancesByName) do
       if recipe.skill.equipmentInfo.usesStyle then
-        if data[style.id] == nil or data[style.id][recipe.id] == nil then
+        if data[makeKey(style, recipe)] == nil then
           if style.name == "Outlaw" and recipe.name == "Robe" then
             -- Ignore; this style is a special case and does not have a Robe page.
             -- https://en.uesp.net/wiki/Online:Outlaw_Style#Notes
@@ -163,8 +166,5 @@ function CanICraftThis.StyleCollectibleCache:verify()
 end
 
 function CanICraftThis.StyleCollectibleCache:getCollectibleId(style, recipe)
-  local styleData = self.data[style.id]
-  if styleData ~= nil then
-    return styleData[recipe.id]
-  end
+  return self.data[makeKey(style, recipe)]
 end
