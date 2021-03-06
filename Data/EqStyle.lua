@@ -12,6 +12,8 @@ local collectibleNamePatternExceptions = {
 function CanICraftThis.EqStyle:register(instance)
   CanICraftThis.assert(instance.id ~= nil, "instance.id ~= nil")
   CanICraftThis.assert(instance.name ~= nil, "instance.name ~= nil")
+  CanICraftThis.assert(instance.material ~= nil, "instance.material ~= nil")
+  instance.material = CanICraftThis.Material:sanitise(instance.material)
   instance.namePattern = CanICraftThis.literalPattern(instance.name)
   instance.writTextPattern = "style: " .. instance.namePattern
   instance.collectibleNamePattern = "^" .. (collectibleNamePatternExceptions[instance.namePattern] or instance.namePattern)
@@ -26,7 +28,7 @@ function CanICraftThis.EqStyle:registerAll()
       local name = GetItemStyleName(id)
       local material = GetItemLinkName(GetItemStyleMaterialLink(id))
       if name ~= nil and name ~= "" and material ~= nil and material ~= "" then
-        self:register { id = id, name = name }
+        self:register { id = id, name = name, material = material }
       end
     end
   end

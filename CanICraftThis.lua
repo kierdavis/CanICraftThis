@@ -22,6 +22,23 @@ local function getNumKnownTraits(recipe)
   return n
 end
 
+local function getMaterialQuantities()
+  local quantities = {}
+  local bagId
+  for _, bagId in ipairs({BAG_BACKPACK, BAG_VIRTUAL, BAG_BANK, BAG_SUBSCRIBER_BANK}) do
+    local bagCache = SHARED_INVENTORY:GetOrCreateBagCache(bagId)
+    local slotIndex
+    for slotIndex in ZO_IterateBagSlots(bagId) do
+      local slot = bagCache[slotIndex]
+      if slot then
+        local name = CanICraftThis.Material:sanitise(slot.name)
+        quantities[name] = (quantities[name] or 0) + slot.stackCount
+      end
+    end
+  end
+  return quantities
+end
+
 local function appendCriterion(textIfMet, textIfNotMet, isMet)
   local text, color
   if isMet then
@@ -83,6 +100,15 @@ local function appendEqSetDLCCriterion(dlc)
   )
 end
 
+local function appendMaterialQuantityCriterion(material, suffix, needed, materialQuantities)
+  appendQuantitativeCriterion(
+    "Sufficient " .. material .. suffix .. ".",
+    "Insufficient " .. material .. suffix .. ".",
+    materialQuantities[material] or 0,
+    needed
+  )
+end
+
 local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCache)
   local itemType = GetItemLinkItemType(itemLink)
   if itemType ~= ITEMTYPE_MASTER_WRIT then return end
@@ -104,6 +130,7 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
     end
     local set = CanICraftThis.EqSet:fromWritText(writText)
     local requiredPassiveAbility = craftingStationData.requiredPassiveAbilityForMainMaterial[mainMaterial]
+    local materialQuantities = getMaterialQuantities()
     ItemTooltip:AddLine("--- Knowledge ---")
     appendEqPassiveAbilityCriterion(skill, requiredPassiveAbility)
     appendEqTraitKnownCriterion(trait, recipe)
@@ -114,7 +141,11 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
     if set.dlc ~= nil then
       appendEqSetDLCCriterion(set.dlc)
     end
-    -- ItemTooltip:AddLine("--- Materials ---")
+    ItemTooltip:AddLine("--- Materials ---")
+    appendMaterialQuantityCriterion(trait.material, " (trait)", 1, materialQuantities)
+    if style ~= nil then
+      appendMaterialQuantityCriterion(style.material, " (style)", 1, materialQuantities)
+    end
   end
 end
 

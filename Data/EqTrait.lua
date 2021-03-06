@@ -4,6 +4,8 @@ CanICraftThis.EqTrait = {
 
 function CanICraftThis.EqTrait:register(instance)
   CanICraftThis.assert(instance.id ~= nil, "instance.id ~= nil")
+  CanICraftThis.assert(instance.material ~= nil, "instance.material ~= nil")
+  instance.material = CanICraftThis.Material:sanitise(instance.material)
   instance.name = GetString("SI_ITEMTRAITTYPE", instance.id)
   instance.namePattern = CanICraftThis.literalPattern(instance.name)
   instance.writTextPattern = "trait: " .. instance.namePattern
@@ -14,9 +16,9 @@ end
 function CanICraftThis.EqTrait:registerAll()
   local index
   for index = 1, GetNumSmithingTraitItems() do
-    local id, materialName = GetSmithingTraitItemInfo(index)
+    local id, material = GetSmithingTraitItemInfo(index)
     if id ~= nil then
-      self:register { id = id }
+      self:register { id = id, material = material }
     end
   end
 end
