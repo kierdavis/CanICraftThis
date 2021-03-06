@@ -1,5 +1,5 @@
 CanICraftThis.CraftingStationCache = {
-  version = 1,
+  version = 2,
 }
 
 function CanICraftThis.CraftingStationCache:open()
@@ -10,16 +10,24 @@ function CanICraftThis.CraftingStationCache:open()
   return instance
 end
 
+local recipeNameExceptions = {
+  ["Shirt"] = "Jerkin",
+}
+
 function CanICraftThis.CraftingStationCache:updateFromCurrentCraftingStation()
   local skillId = GetCraftingInteractionType()
   local skill = CanICraftThis.Skill:fromId(skillId)
   if not skill.equipmentInfo then return end
   local skillData = {
     requiredPassiveAbilityForMainMaterial = {},
+    requiredQuantityForRecipeAndMainMaterial = {},
   }
   local recipeIndex
   for recipeIndex = 1, GetNumSmithingPatterns() do
     local recipeName, _, _, numMaterials = GetSmithingPatternInfo(recipeIndex)
+    recipeName = recipeNameExceptions[recipeName] or recipeName
+    local recipe = CanICraftThis.EqRecipe:fromName(recipeName)
+    skillData.requiredQuantityForRecipeAndMainMaterial[recipe.id] = {}
     local materialIndex
     for materialIndex = 1, numMaterials do
       local material, _, requiredQuantity, _, _, _, _, _, _, requiredPassiveAbility = GetSmithingPatternMaterialItemInfo(recipeIndex, materialIndex)
@@ -33,6 +41,10 @@ function CanICraftThis.CraftingStationCache:updateFromCurrentCraftingStation()
           )
         end
         skillData.requiredPassiveAbilityForMainMaterial[material] = requiredPassiveAbility
+        local prevRequiredQuantity = skillData.requiredQuantityForRecipeAndMainMaterial[recipe.id][material]
+        if prevRequiredQuantity == nil or requiredQuantity < prevRequiredQuantity then
+          skillData.requiredQuantityForRecipeAndMainMaterial[recipe.id][material] = requiredQuantity
+        end
       end
     end
   end

@@ -149,6 +149,7 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
     end
     local set = CanICraftThis.EqSet:fromWritText(writText)
     local requiredPassiveAbility = craftingStationData.requiredPassiveAbilityForMainMaterial[mainMaterial]
+    local requiredMainMaterialQuantity = craftingStationData.requiredQuantityForRecipeAndMainMaterial[recipe.id][mainMaterial]
     local materialQuantities = getMaterialQuantities()
     ItemTooltip:AddLine("--- Knowledge ---")
     appendEqPassiveAbilityCriterion(skill, requiredPassiveAbility)
@@ -161,6 +162,7 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
       appendEqSetDLCCriterion(set.dlc)
     end
     ItemTooltip:AddLine("--- Materials ---")
+    appendMaterialQuantityCriterion(mainMaterial, "", requiredMainMaterialQuantity, materialQuantities)
     appendMaterialQuantityCriterion(trait.material, " (trait)", 1, materialQuantities)
     if style ~= nil then
       appendMaterialQuantityCriterion(style.material, " (style)", 1, materialQuantities)
