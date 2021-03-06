@@ -22,6 +22,24 @@ local function getNumKnownTraits(recipe)
   return n
 end
 
+local function iterImprovementMaterials(skill, desiredQualityId)
+  local i = 0
+  return function()
+    while i < 100 do
+      i = i + 1
+      local material, _, _, _, _, _, _, materialQualityId = GetSmithingImprovementItemInfo(skill.id, i)
+      if material == nil or material == "" then break end
+      if materialQualityId <= desiredQualityId then
+        return {
+          name = CanICraftThis.Material:sanitise(material),
+          requiredQuantity = GetSmithingGuaranteedImprovementItemAmount(skill.id, i),
+        }
+      end
+    end
+    return nil
+  end
+end
+
 local function getMaterialQuantities()
   local quantities = {}
   local bagId
@@ -115,6 +133,7 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
   local skill = CanICraftThis.Skill:tryFromWritName(GetItemLinkName(itemLink))
   if skill == nil then return end
   local writText = GenerateMasterWritBaseText(itemLink)
+  local qualityId = GetItemLinkDisplayQuality(itemLink)
   if skill.equipmentInfo then
     local craftingStationData = craftingStationCache:getDataForSkill(skill)
     if craftingStationData == nil then
@@ -145,6 +164,9 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
     appendMaterialQuantityCriterion(trait.material, " (trait)", 1, materialQuantities)
     if style ~= nil then
       appendMaterialQuantityCriterion(style.material, " (style)", 1, materialQuantities)
+    end
+    for improvementMaterial in iterImprovementMaterials(skill, qualityId) do
+      appendMaterialQuantityCriterion(improvementMaterial.name, " (improve)", improvementMaterial.requiredQuantity, materialQuantities)
     end
   end
 end
