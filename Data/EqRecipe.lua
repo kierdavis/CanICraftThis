@@ -80,7 +80,7 @@ CanICraftThis.EqRecipe:registerAll()
 
 function CanICraftThis.EqRecipe:fromName(name)
   local instance = self.instancesByName[name]
-  CanICraftThis.assert(instance ~= nil, "instance ~= nil")
+  CanICraftThis.assert(instance ~= nil, "instance ~= nil where name = '" .. name .. "'")
   return instance
 end
 

@@ -76,7 +76,7 @@ CanICraftThis.Skill:registerAll()
 
 function CanICraftThis.Skill:fromId(id)
   local instance = self.instancesById[id]
-  CanICraftThis.assert(instance ~= nil, "instance ~= nil")
+  CanICraftThis.assert(instance ~= nil, "instance ~= nil where id = " .. tostring(id))
   return instance
 end
 
