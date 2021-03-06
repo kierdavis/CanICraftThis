@@ -135,11 +135,6 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
   local writText = GenerateMasterWritBaseText(itemLink)
   local qualityId = GetItemLinkDisplayQuality(itemLink)
   if skill.equipmentInfo then
-    local craftingStationData = craftingStationCache:getDataForSkill(skill)
-    if craftingStationData == nil then
-      ItemTooltip:AddLine("You must visit a " .. skill.name .. " Station before detailed information about this writ can be displayed.")
-      return
-    end
     local mainMaterial = CanICraftThis.Material:eqMainFromWritText(writText)
     local recipe = CanICraftThis.EqRecipe:fromWritText(writText)
     local trait = CanICraftThis.EqTrait:fromWritText(writText, recipe)
@@ -148,8 +143,12 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
       style = CanICraftThis.EqStyle:fromWritText(writText)
     end
     local set = CanICraftThis.EqSet:fromWritText(writText)
-    local requiredPassiveAbility = craftingStationData.requiredPassiveAbilityForMainMaterial[mainMaterial]
-    local requiredMainMaterialQuantity = craftingStationData.requiredQuantityForRecipeAndMainMaterial[recipe.id][mainMaterial]
+    local requiredPassiveAbility = craftingStationCache:getRequiredPassiveAbility(mainMaterial)
+    local requiredMainMaterialQuantity = craftingStationCache:getRequiredMainMaterialQuantity(mainMaterial, recipe)
+    if requiredPassiveAbility == nil or requiredMainMaterialQuantity == nil then
+      ItemTooltip:AddLine("You must visit a " .. skill.name .. " Station before detailed information about this writ can be displayed.")
+      return
+    end
     local materialQuantities = getMaterialQuantities()
     ItemTooltip:AddLine("--- Knowledge ---")
     appendEqPassiveAbilityCriterion(skill, requiredPassiveAbility)

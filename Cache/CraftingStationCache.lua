@@ -1,10 +1,16 @@
 CanICraftThis.CraftingStationCache = {
-  version = 2,
+  version = 4,
 }
 
 function CanICraftThis.CraftingStationCache:open()
   local data = ZO_SavedVars:NewAccountWide(CanICraftThis.savedVarsName, self.version, "craftingStationCache", {}, GetWorldName())
   CanICraftThis.assert(data ~= nil, "data ~= nil")
+  if data.requiredPassiveAbility == nil then
+    data.requiredPassiveAbility = {}
+  end
+  if data.requiredQuantity == nil then
+    data.requiredQuantity = {}
+  end
   local instance = { data = data }
   setmetatable(instance, { __index = self })
   return instance
@@ -18,37 +24,33 @@ function CanICraftThis.CraftingStationCache:updateFromCurrentCraftingStation()
   local skillId = GetCraftingInteractionType()
   local skill = CanICraftThis.Skill:fromId(skillId)
   if not skill.equipmentInfo then return end
-  local skillData = {
-    requiredPassiveAbilityForMainMaterial = {},
-    requiredQuantityForRecipeAndMainMaterial = {},
-  }
   local recipeIndex
   for recipeIndex = 1, GetNumSmithingPatterns() do
     local recipeName, _, _, numMaterials = GetSmithingPatternInfo(recipeIndex)
     recipeName = recipeNameExceptions[recipeName] or recipeName
     local recipe = CanICraftThis.EqRecipe:fromName(recipeName)
-    skillData.requiredQuantityForRecipeAndMainMaterial[recipe.id] = {}
+    local requiredQuantityForMainMaterial = {}
     local materialIndex
     for materialIndex = 1, numMaterials do
       local material, _, requiredQuantity, _, _, _, _, _, _, requiredPassiveAbility = GetSmithingPatternMaterialItemInfo(recipeIndex, materialIndex)
       local material = CanICraftThis.Material:sanitise(material)
       if CanICraftThis.Material:isEqMain(material) then
-        local prevRequiredPassiveAbility = skillData.requiredPassiveAbilityForMainMaterial[material]
+        local prevRequiredPassiveAbility = self.data.requiredPassiveAbility[material]
         if prevRequiredPassiveAbility ~= nil and prevRequiredPassiveAbility ~= requiredPassiveAbility then
           CanICraftThis.reportUnexpected(
             "multiple values of requiredPassiveAbility for same material " .. material .. ": " ..
             tostring(prevRequiredPassiveAbility) .. ", " .. tostring(requiredPassiveAbility)
           )
         end
-        skillData.requiredPassiveAbilityForMainMaterial[material] = requiredPassiveAbility
-        local prevRequiredQuantity = skillData.requiredQuantityForRecipeAndMainMaterial[recipe.id][material]
+        self.data.requiredPassiveAbility[material] = requiredPassiveAbility
+        local prevRequiredQuantity = requiredQuantityForMainMaterial[material]
         if prevRequiredQuantity == nil or requiredQuantity < prevRequiredQuantity then
-          skillData.requiredQuantityForRecipeAndMainMaterial[recipe.id][material] = requiredQuantity
+          requiredQuantityForMainMaterial[material] = requiredQuantity
         end
       end
     end
+    self.data.requiredQuantity[recipe.id] = requiredQuantityForMainMaterial
   end
-  self.data[skillId] = skillData
 end
 
 function CanICraftThis.CraftingStationCache:installHook()
@@ -57,6 +59,13 @@ function CanICraftThis.CraftingStationCache:installHook()
   end)
 end
 
-function CanICraftThis.CraftingStationCache:getDataForSkill(skill)
-  return self.data[skill.id]
+function CanICraftThis.CraftingStationCache:getRequiredPassiveAbility(mainMaterial)
+  return self.data.requiredPassiveAbility[mainMaterial]
+end
+
+function CanICraftThis.CraftingStationCache:getRequiredMainMaterialQuantity(mainMaterial, recipe)
+  local a = self.data.requiredQuantity[recipe.id]
+  if a ~= nil then
+    return a[mainMaterial]
+  end
 end
