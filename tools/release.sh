@@ -9,10 +9,10 @@ fi
 
 name=CanICraftThis
 version="$1"
-root=$(dirname $(dirname $(readlink -f ${BASH_SOURCE[0]})))
+root="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
 
-cd $root
-mkdir -p $root/release
+cd "$root"
+mkdir -p "$root/release"
 git archive \
   --format=zip \
   --prefix="$name/" \
