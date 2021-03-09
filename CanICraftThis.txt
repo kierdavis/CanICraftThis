@@ -7,7 +7,7 @@
 ## Description: Easily see whether you have all knowledge and materials required for a writ before opening it.
 ## Author: always.ada
 ## APIVersion: 100033 100034
-## AddOnVersion: 3
+## AddOnVersion: 4
 ## SavedVariables: CanICraftThisVars
 
 Core.lua

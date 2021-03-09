@@ -183,6 +183,9 @@ local function installTooltipExtensionHooks(craftingStationCache, styleCollectib
   ZO_PostHook(ItemTooltip, "SetTradingHouseListing", function(_, listingIndex)
     extendTooltip(GetTradingHouseListingItemLink(listingIndex), craftingStationCache, styleCollectibleCache)
   end)
+  ZO_PostHook(ItemTooltip, "SetAttachedMailItem", function(_, mailId, attachmentIndex)
+    extendTooltip(GetAttachedItemLink(mailId, attachmentIndex), craftingStationCache, styleCollectibleCache)
+  end)
 end
 
 local function initialise()
