@@ -10,7 +10,7 @@ function CanICraftThis.EqRecipe:register(instance)
   CanICraftThis.assert(instance.researchLineIndex ~= nil, "instance.researchLineIndex ~= nil")
   CanICraftThis.assert(instance.numTraits ~= nil, "instance.numTraits ~= nil")
   instance.namePattern = CanICraftThis.literalPattern(instance.name)
-  instance.writTextPattern = "craft an? [^;]+ " .. instance.namePattern
+  instance.writTextPattern = "craft an? [^;]+ " .. instance.namePattern .. "%A"
   if instance.skill.equipmentInfo.usesStyle then
     CanICraftThis.assert(instance.styleCollectibleSubCategory ~= nil, "instance.styleCollectibleSubCategory ~= nil")
     instance.styleCollectibleNamePattern = (instance.styleCollectibleNamePattern or instance.namePattern) .. "$"
