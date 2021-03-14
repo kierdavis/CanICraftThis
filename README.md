@@ -24,7 +24,7 @@ I don't provide any guarantees on when/if I will respond, but I try my best.
 
 ## Known bugs
 
-* As of APIVersion 100033, ESO has a bug in its collectibles database
+* As of APIVersion 100034, ESO has a bug in its collectibles database
   (as accessed via `GetCollectibleInfo`). Two collectible IDs (6117 and 6131)
   both yield the same name "Honor Guard Jerkin", and no collectible ID yields
   the name "Honor Guard Jack" despite multiple community wikis implying that

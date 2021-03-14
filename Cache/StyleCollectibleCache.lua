@@ -101,10 +101,9 @@ function CanICraftThis.StyleCollectibleCache:verify()
           if style.name == "Outlaw" and recipe.name == "Robe" then
             -- Ignore; this style is a special case and does not have a Robe page.
             -- https://en.uesp.net/wiki/Online:Outlaw_Style#Notes
-          elseif style.name == "Honor Guard" and recipe.name == "Jack" then
+          elseif CanICraftThis.isHonorGuardCollectibleBugPresent and style.name == "Honor Guard" and recipe.name == "Jack" then
             -- Ignore; due to a bug in ESO's collectible database,
-            -- no collectible ID yields the name "Honor Guard Jack", while
-            -- multiple collectible IDs yield the name "Honor Guard Jerkin".
+            -- no collectible ID yields the name "Honor Guard Jack".
           else
             CanICraftThis.reportUnexpected("Failed to find a collectible ID for the " .. style.name .. " " .. recipe.name .. " style.")
           end

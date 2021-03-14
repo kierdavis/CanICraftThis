@@ -188,6 +188,20 @@ local function installTooltipExtensionHooks(craftingStationCache, styleCollectib
   end)
 end
 
+local function installDeveloperHooks()
+  local onlyOnce = true
+  EVENT_MANAGER:RegisterForEvent(CanICraftThis.addonName, EVENT_PLAYER_ACTIVATED, function()
+    if onlyOnce then
+      onlyOnce = false
+      if CanICraftThis.isHonorGuardCollectibleBugPresent then
+        CanICraftThis.reportInfo("Honor Guard collectible bug is still present.")
+      else
+        CanICraftThis.reportInfo("Honor Guard collectible bug is fixed!")
+      end
+    end
+  end)
+end
+
 local function initialise()
   local craftingStationCache = CanICraftThis.CraftingStationCache:open()
   local styleCollectibleCache = CanICraftThis.StyleCollectibleCache:open()
@@ -195,7 +209,9 @@ local function initialise()
   styleCollectibleCache:populateIfNeeded()
   styleCollectibleCache:verify()
   installTooltipExtensionHooks(craftingStationCache, styleCollectibleCache)
-  -- EVENT_MANAGER:RegisterForEvent(CanICraftThis.addonName, EVENT_PLAYER_ACTIVATED, function() end)
+  if GetDisplayName() == CanICraftThis.authorName then
+    installDeveloperHooks()
+  end
 end
 
 local function onAddOnLoaded(eventCode, eventAddonName)
