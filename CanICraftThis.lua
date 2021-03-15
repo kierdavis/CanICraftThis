@@ -110,11 +110,18 @@ local function appendEqSetNumTraitsCriterion(set, recipe)
   )
 end
 
-local function appendEqSetDLCCriterion(dlc)
+local function appendEqSetDLCCriterion(name)
+  local instance = CanICraftThis.DLC:tryFromName(name)
+  local isUnlocked
+  if instance ~= nil then
+    isUnlocked = IsCollectibleUnlocked(instance.collectibleId)
+  else
+    isUnlocked = false
+  end
   appendCriterion(
-    dlc.name .. " DLC owned, which contains the set crafting station.",
-    dlc.name .. " DLC not owned, which contains the set crafting station.",
-    IsCollectibleUnlocked(dlc.collectibleId)
+    name .. " DLC owned, which contains the set crafting station.",
+    name .. " DLC not owned, which contains the set crafting station.",
+    isUnlocked
   )
 end
 
@@ -157,8 +164,8 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
       appendEqStyleKnownCriterion(style, recipe, styleCollectibleCache)
     end
     appendEqSetNumTraitsCriterion(set, recipe)
-    if set.dlc ~= nil then
-      appendEqSetDLCCriterion(set.dlc)
+    if set.dlcName ~= nil then
+      appendEqSetDLCCriterion(set.dlcName)
     end
     ItemTooltip:AddLine("--- Materials ---")
     appendMaterialQuantityCriterion(mainMaterial, "", requiredMainMaterialQuantity, materialQuantities)

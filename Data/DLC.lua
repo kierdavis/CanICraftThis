@@ -31,8 +31,6 @@ end
 
 CanICraftThis.DLC:registerAll()
 
-function CanICraftThis.DLC:fromName(name)
-  local instance = self.instancesByName[name]
-  CanICraftThis.assert(instance ~= nil, "instance ~= nil where name = '" .. name .. "'")
-  return instance
+function CanICraftThis.DLC:tryFromName(name)
+  return self.instancesByName[name]
 end

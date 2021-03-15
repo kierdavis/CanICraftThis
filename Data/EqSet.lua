@@ -19,9 +19,6 @@ local function ancientDragonguard(recipe)
     return 6
   end
 end
-local function getDLC(name)
-  return CanICraftThis.DLC:fromName(name)
-end
 
 function CanICraftThis.EqSet:registerAll()
   self:register { name = "Ashen Grip", getNumRequiredTraits = always(2) }
@@ -50,42 +47,42 @@ function CanICraftThis.EqSet:registerAll()
   self:register { name = "Shalidor's Curse", getNumRequiredTraits = always(8) }
   self:register { name = "Way of the Arena", getNumRequiredTraits = always(8) }
   self:register { name = "Twice-Born Star", getNumRequiredTraits = always(9) }
-  self:register { name = "Armor Master", getNumRequiredTraits = always(9), dlc = getDLC("Imperial City") }
-  self:register { name = "Noble's Conquest", getNumRequiredTraits = always(5), dlc = getDLC("Imperial City") }
-  self:register { name = "Redistributor", getNumRequiredTraits = always(7), dlc = getDLC("Imperial City") }
-  self:register { name = "Law of Julianos", getNumRequiredTraits = always(6), dlc = getDLC("Orsinium") }
-  self:register { name = "Morkuldin", getNumRequiredTraits = always(9), dlc = getDLC("Orsinium") }
-  self:register { name = "Trial by Fire", getNumRequiredTraits = always(3), dlc = getDLC("Orsinium") }
-  self:register { name = "Clever Alchemist", getNumRequiredTraits = always(7), dlc = getDLC("Thieves Guild") }
-  self:register { name = "Eternal Hunt", getNumRequiredTraits = always(9), dlc = getDLC("Thieves Guild") }
-  self:register { name = "Tava's Favor", getNumRequiredTraits = always(5), dlc = getDLC("Thieves Guild") }
-  self:register { name = "Kvatch Gladiator", getNumRequiredTraits = always(5), dlc = getDLC("Dark Brotherhood") }
-  self:register { name = "Pelinal's Aptitude", getNumRequiredTraits = always(9), dlc = getDLC("Dark Brotherhood") }
-  self:register { name = "Varen's Legacy", getNumRequiredTraits = always(7), dlc = getDLC("Dark Brotherhood") }
-  self:register { name = "Fortified Brass", getNumRequiredTraits = always(4), dlc = getDLC("Clockwork City") }
-  self:register { name = "Innate Axiom", getNumRequiredTraits = always(2), dlc = getDLC("Clockwork City") }
-  self:register { name = "Mechanical Acuity", getNumRequiredTraits = always(6), dlc = getDLC("Clockwork City") }
-  self:register { name = "Assassin's Guile", getNumRequiredTraits = always(3), dlc = getDLC("Morrowind") }
-  self:register { name = "Daedric Trickery", getNumRequiredTraits = always(8), dlc = getDLC("Morrowind") }
-  self:register { name = "Shacklebreaker", getNumRequiredTraits = always(6), dlc = getDLC("Morrowind") }
-  self:register { name = "Adept Rider", getNumRequiredTraits = always(3), dlc = getDLC("Summerset") }
-  self:register { name = "Nocturnal's Favor", getNumRequiredTraits = always(9), dlc = getDLC("Summerset") }
-  self:register { name = "Sload's Semblance", getNumRequiredTraits = always(6), dlc = getDLC("Summerset") }
-  self:register { name = "Grave-Stake Collector", getNumRequiredTraits = always(7), dlc = getDLC("Murkmire") }
-  self:register { name = "Might of the Lost Legion", getNumRequiredTraits = always(4), dlc = getDLC("Murkmire") }
-  self:register { name = "Naga Shaman", getNumRequiredTraits = always(2), dlc = getDLC("Murkmire") }
-  self:register { name = "Coldharbour's Favorite", getNumRequiredTraits = always(8), dlc = getDLC("Elsweyr") }
-  self:register { name = "Senche-raht's Grit", getNumRequiredTraits = always(5), dlc = getDLC("Elsweyr") }
-  self:register { name = "Vastarie's Tutelage", getNumRequiredTraits = always(3), dlc = getDLC("Elsweyr") }
-  self:register { name = "Daring Corsair", getNumRequiredTraits = always(3), dlc = getDLC("Dragonhold") }
-  self:register { name = "New Moon Acolyte", getNumRequiredTraits = always(9), dlc = getDLC("Dragonhold") }
-  self:register { name = "Ancient Dragonguard", getNumRequiredTraits = ancientDragonguard, dlc = getDLC("Dragonhold") }
-  self:register { name = "Dragon's Appetite", getNumRequiredTraits = always(7), dlc = getDLC("Greymoor") }
-  self:register { name = "Stuhn's Favor", getNumRequiredTraits = always(5), dlc = getDLC("Greymoor") }
-  self:register { name = "Spell Parasite", getNumRequiredTraits = always(3), dlc = getDLC("Greymoor") }
-  self:register { name = "Legacy of Karth", getNumRequiredTraits = always(6), dlc = getDLC("Markarth") }
-  self:register { name = "Red Eagle's Fury", getNumRequiredTraits = always(3), dlc = getDLC("Markarth") }
-  self:register { name = "Aetherial Ascension", getNumRequiredTraits = always(9), dlc = getDLC("Markarth") }
+  self:register { name = "Armor Master", getNumRequiredTraits = always(9), dlcName = "Imperial City" }
+  self:register { name = "Noble's Conquest", getNumRequiredTraits = always(5), dlcName = "Imperial City" }
+  self:register { name = "Redistributor", getNumRequiredTraits = always(7), dlcName = "Imperial City" }
+  self:register { name = "Law of Julianos", getNumRequiredTraits = always(6), dlcName = "Orsinium" }
+  self:register { name = "Morkuldin", getNumRequiredTraits = always(9), dlcName = "Orsinium" }
+  self:register { name = "Trial by Fire", getNumRequiredTraits = always(3), dlcName = "Orsinium" }
+  self:register { name = "Clever Alchemist", getNumRequiredTraits = always(7), dlcName = "Thieves Guild" }
+  self:register { name = "Eternal Hunt", getNumRequiredTraits = always(9), dlcName = "Thieves Guild" }
+  self:register { name = "Tava's Favor", getNumRequiredTraits = always(5), dlcName = "Thieves Guild" }
+  self:register { name = "Kvatch Gladiator", getNumRequiredTraits = always(5), dlcName = "Dark Brotherhood" }
+  self:register { name = "Pelinal's Aptitude", getNumRequiredTraits = always(9), dlcName = "Dark Brotherhood" }
+  self:register { name = "Varen's Legacy", getNumRequiredTraits = always(7), dlcName = "Dark Brotherhood" }
+  self:register { name = "Fortified Brass", getNumRequiredTraits = always(4), dlcName = "Clockwork City" }
+  self:register { name = "Innate Axiom", getNumRequiredTraits = always(2), dlcName = "Clockwork City" }
+  self:register { name = "Mechanical Acuity", getNumRequiredTraits = always(6), dlcName = "Clockwork City" }
+  self:register { name = "Assassin's Guile", getNumRequiredTraits = always(3), dlcName = "Morrowind" }
+  self:register { name = "Daedric Trickery", getNumRequiredTraits = always(8), dlcName = "Morrowind" }
+  self:register { name = "Shacklebreaker", getNumRequiredTraits = always(6), dlcName = "Morrowind" }
+  self:register { name = "Adept Rider", getNumRequiredTraits = always(3), dlcName = "Summerset" }
+  self:register { name = "Nocturnal's Favor", getNumRequiredTraits = always(9), dlcName = "Summerset" }
+  self:register { name = "Sload's Semblance", getNumRequiredTraits = always(6), dlcName = "Summerset" }
+  self:register { name = "Grave-Stake Collector", getNumRequiredTraits = always(7), dlcName = "Murkmire" }
+  self:register { name = "Might of the Lost Legion", getNumRequiredTraits = always(4), dlcName = "Murkmire" }
+  self:register { name = "Naga Shaman", getNumRequiredTraits = always(2), dlcName = "Murkmire" }
+  self:register { name = "Coldharbour's Favorite", getNumRequiredTraits = always(8), dlcName = "Elsweyr" }
+  self:register { name = "Senche-raht's Grit", getNumRequiredTraits = always(5), dlcName = "Elsweyr" }
+  self:register { name = "Vastarie's Tutelage", getNumRequiredTraits = always(3), dlcName = "Elsweyr" }
+  self:register { name = "Daring Corsair", getNumRequiredTraits = always(3), dlcName = "Dragonhold" }
+  self:register { name = "New Moon Acolyte", getNumRequiredTraits = always(9), dlcName = "Dragonhold" }
+  self:register { name = "Ancient Dragonguard", getNumRequiredTraits = ancientDragonguard, dlcName = "Dragonhold" }
+  self:register { name = "Dragon's Appetite", getNumRequiredTraits = always(7), dlcName = "Greymoor" }
+  self:register { name = "Stuhn's Favor", getNumRequiredTraits = always(5), dlcName = "Greymoor" }
+  self:register { name = "Spell Parasite", getNumRequiredTraits = always(3), dlcName = "Greymoor" }
+  self:register { name = "Legacy of Karth", getNumRequiredTraits = always(6), dlcName = "Markarth" }
+  self:register { name = "Red Eagle's Fury", getNumRequiredTraits = always(3), dlcName = "Markarth" }
+  self:register { name = "Aetherial Ascension", getNumRequiredTraits = always(9), dlcName = "Markarth" }
 end
 
 CanICraftThis.EqSet:registerAll()
