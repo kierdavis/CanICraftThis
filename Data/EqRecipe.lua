@@ -39,7 +39,12 @@ function CanICraftThis.EqRecipe:registerAll()
   end
   local function register(args)
     args.researchLineName = args.researchLineName or args.name
-    for key, value in pairs(argsByResearchLineName[args.researchLineName]) do
+    local argsFromResearchLine = argsByResearchLineName[args.researchLineName]
+    if argsFromResearchLine == nil and args.traitCategoryId == ITEM_TRAIT_TYPE_CATEGORY_JEWELRY then
+      -- Jewelry crafting DLC (Summerset) not enabled. Don't register this recipe.
+      return
+    end
+    for key, value in pairs(argsFromResearchLine) do
       args[key] = value
     end
     self:register(args)
