@@ -57,57 +57,68 @@ local function getMaterialQuantities()
   return quantities
 end
 
-local function appendCriterion(textIfMet, textIfNotMet, isMet)
-  local text, color
-  if isMet then
-    text = textIfMet
-    color = ZO_SUCCEEDED_TEXT
-  else
-    text = textIfNotMet
-    color = ZO_ERROR_COLOR
+local function appendCriterion(options)
+  if options.have ~= nil then
+    CanICraftThis.assert(options.needed ~= nil, "options.needed ~= nil")
+    CanICraftThis.assert(options.textIfMet ~= nil, "options.textIfMet ~= nil")
+    CanICraftThis.assert(options.textIfNotMet ~= nil, "options.textIfNotMet ~= nil")
+    local suffix = " [" .. tostring(options.have) .. "/" .. tostring(options.needed) .. "]"
+    options.textIfMet = options.textIfMet .. suffix
+    options.textIfNotMet = options.textIfNotMet .. suffix
+    options.isMet = options.have >= options.needed
   end
-  ItemTooltip:AddLine(text, nil, color:UnpackRGB())
-end
-
-local function appendQuantitativeCriterion(textIfMet, textIfNotMet, have, needed)
-  local suffix = " [" .. tostring(have) .. "/" .. tostring(needed) .. "]"
-  appendCriterion(textIfMet .. suffix, textIfNotMet .. suffix, have >= needed)
+  if options.isMet ~= nil then
+    CanICraftThis.assert(options.textIfMet ~= nil, "options.textIfMet ~= nil")
+    CanICraftThis.assert(options.textIfNotMet ~= nil, "options.textIfNotMet ~= nil")
+    if options.colorIfMet == nil then options.colorIfMet = ZO_SUCCEEDED_TEXT end
+    if options.colorIfNotMet == nil then options.colorIfNotMet = ZO_ERROR_COLOR end
+    if options.isMet then
+      options.text = options.textIfMet
+      options.color = options.colorIfMet
+    else
+      options.text = options.textIfNotMet
+      options.color = options.colorIfNotMet
+    end
+  end
+  CanICraftThis.assert(options.text ~= nil, "options.text ~= nil")
+  CanICraftThis.assert(options.color ~= nil, "options.color ~= nil")
+  ItemTooltip:AddLine(options.text, nil, options.color:UnpackRGB())
 end
 
 local function appendEqPassiveAbilityCriterion(skill, requiredPassiveAbility)
-  appendQuantitativeCriterion(
-    "Sufficient " .. skill.equipmentInfo.passiveAbilityName .. " skill.",
-    "Insufficient " .. skill.equipmentInfo.passiveAbilityName .. " skill.",
-    GetNonCombatBonus(skill.equipmentInfo.passiveAbilityId),
-    requiredPassiveAbility
-  )
+  appendCriterion({
+    textIfMet = "Sufficient " .. skill.equipmentInfo.passiveAbilityName .. " skill.",
+    textIfNotMet = "Insufficient " .. skill.equipmentInfo.passiveAbilityName .. " skill.",
+    have = GetNonCombatBonus(skill.equipmentInfo.passiveAbilityId),
+    needed = requiredPassiveAbility,
+  })
 end
 
 local function appendEqTraitKnownCriterion(trait, recipe)
-  appendCriterion(
-    trait.name .. " trait known for " .. recipe.name .. ".",
-    trait.name .. " trait not known for " .. recipe.name .. ".",
-    isTraitKnown(trait, recipe)
-  )
+  appendCriterion({
+    textIfMet = trait.name .. " trait known for " .. recipe.name .. ".",
+    textIfNotMet = trait.name .. " trait not known for " .. recipe.name .. ".",
+    isMet = isTraitKnown(trait, recipe),
+  })
 end
 
 local function appendEqStyleKnownCriterion(style, recipe, styleCollectibleCache)
   local collectibleId = styleCollectibleCache:getCollectibleId(style, recipe)
   if collectibleId == nil then return end -- this can happen due to bugs in ESO's database
-  appendCriterion(
-    style.name .. " style known for " .. recipe.name .. ".",
-    style.name .. " style not known for " .. recipe.name .. ".",
-    IsCollectibleUnlocked(collectibleId)
-  )
+  appendCriterion({
+    textIfMet = style.name .. " style known for " .. recipe.name .. ".",
+    textIfNotMet = style.name .. " style not known for " .. recipe.name .. ".",
+    isMet = IsCollectibleUnlocked(collectibleId),
+  })
 end
 
 local function appendEqSetNumTraitsCriterion(set, recipe)
-  appendQuantitativeCriterion(
-    "Sufficient traits known for " .. recipe.name .. ".",
-    "Insufficient traits known for " .. recipe.name .. ".",
-    getNumKnownTraits(recipe),
-    set.getNumRequiredTraits(recipe)
-  )
+  appendCriterion({
+    textIfMet = "Sufficient traits known for " .. recipe.name .. ".",
+    textIfNotMet = "Insufficient traits known for " .. recipe.name .. ".",
+    have = getNumKnownTraits(recipe),
+    needed = set.getNumRequiredTraits(recipe),
+  })
 end
 
 local function appendEqSetDLCCriterion(name)
@@ -118,20 +129,41 @@ local function appendEqSetDLCCriterion(name)
   else
     isUnlocked = false
   end
-  appendCriterion(
-    name .. " DLC owned, which contains the set crafting station.",
-    name .. " DLC not owned, which contains the set crafting station.",
-    isUnlocked
-  )
+  appendCriterion({
+    textIfMet = name .. " DLC owned, which contains the set crafting station.",
+    textIfNotMet = name .. " DLC not owned, which contains the set crafting station.",
+    isMet = isUnlocked,
+  })
 end
 
-local function appendMaterialQuantityCriterion(material, suffix, needed, materialQuantities)
-  appendQuantitativeCriterion(
-    "Sufficient " .. material .. suffix .. ".",
-    "Insufficient " .. material .. suffix .. ".",
-    materialQuantities[material] or 0,
-    needed
-  )
+local function appendMaterialQuantityCriterion(options)
+  CanICraftThis.assert(options.material ~= nil, "options.material ~= nil")
+  CanICraftThis.assert(options.needed ~= nil, "options.needed ~= nil")
+  CanICraftThis.assert(options.materialQuantities ~= nil, "options.materialQuantities ~= nil")
+  options.suffix = options.suffix or ""
+  options.textIfMet = "Sufficient " .. options.material .. options.suffix .. "."
+  options.textIfNotMet = "Insufficient " .. options.material .. options.suffix .. "."
+  options.have = options.materialQuantities[options.material] or 0
+  appendCriterion(options)
+end
+
+local function appendStyleMaterialQuantityCriterion(options)
+  CanICraftThis.assert(options.material ~= nil, "options.material ~= nil")
+  CanICraftThis.assert(options.needed ~= nil, "options.needed ~= nil")
+  CanICraftThis.assert(options.materialQuantities ~= nil, "options.materialQuantities ~= nil")
+  options.suffix = " (style)"
+  local wildcardMaterial = CanICraftThis.Material.wildcardStyle
+  local have = options.materialQuantities[options.material] or 0
+  local wildcardHave = options.materialQuantities[wildcardMaterial] or 0
+  if have < options.needed and wildcardHave >= options.needed then
+    options.colorIfNotMet = ZO_SECOND_CONTRAST_TEXT
+    appendMaterialQuantityCriterion(options)
+    options.colorIfNotMet = nil
+    options.material = wildcardMaterial
+    appendMaterialQuantityCriterion(options)
+  else
+    appendMaterialQuantityCriterion(options)
+  end
 end
 
 local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCache)
@@ -168,13 +200,31 @@ local function extendTooltip(itemLink, craftingStationCache, styleCollectibleCac
       appendEqSetDLCCriterion(set.dlcName)
     end
     ItemTooltip:AddLine("--- Materials ---")
-    appendMaterialQuantityCriterion(mainMaterial, "", requiredMainMaterialQuantity, materialQuantities)
-    appendMaterialQuantityCriterion(trait.material, " (trait)", 1, materialQuantities)
+    appendMaterialQuantityCriterion({
+      material = mainMaterial,
+      needed = requiredMainMaterialQuantity,
+      materialQuantities = materialQuantities,
+    })
+    appendMaterialQuantityCriterion({
+      material = trait.material,
+      suffix = " (trait)",
+      needed = 1,
+      materialQuantities = materialQuantities,
+    })
     if style ~= nil then
-      appendMaterialQuantityCriterion(style.material, " (style)", 1, materialQuantities)
+      appendStyleMaterialQuantityCriterion({
+        material = style.material,
+        needed = 1,
+        materialQuantities = materialQuantities,
+      })
     end
     for improvementMaterial in iterImprovementMaterials(skill, qualityId) do
-      appendMaterialQuantityCriterion(improvementMaterial.name, " (improve)", improvementMaterial.requiredQuantity, materialQuantities)
+      appendMaterialQuantityCriterion({
+        material = improvementMaterial.name,
+        suffix = " (improve)",
+        needed = improvementMaterial.requiredQuantity,
+        materialQuantities = materialQuantities,
+      })
     end
   end
 end

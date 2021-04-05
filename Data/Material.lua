@@ -32,3 +32,5 @@ function CanICraftThis.Material:eqMainFromWritText(writText)
   CanICraftThis.reportUnexpected("writ text did not match any registered main Material: " .. writText)
   return nil
 end
+
+CanICraftThis.Material.wildcardStyle = CanICraftThis.Material:sanitise("Crown Mimic Stone")
