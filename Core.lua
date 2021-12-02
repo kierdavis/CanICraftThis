@@ -9,7 +9,7 @@ function CanICraftThis.reportInfo(message)
 end
 
 function CanICraftThis.reportUnexpected(message)
-  error("Unexpected situation!\n" .. message .. "\nThis typically indicates a bug in the " .. CanICraftThis.addonName .. " add-on.")
+  d("[" .. CanICraftThis.addonName .. "] " .. "Unexpected situation!\n" .. message .. "\nThis typically indicates a bug in the " .. CanICraftThis.addonName .. " add-on.")
 end
 
 function CanICraftThis.assert(condition, conditionString)

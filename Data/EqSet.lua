@@ -83,6 +83,12 @@ function CanICraftThis.EqSet:registerAll()
   self:register { name = "Legacy of Karth", getNumRequiredTraits = always(6), dlcName = "Markarth" }
   self:register { name = "Red Eagle's Fury", getNumRequiredTraits = always(3), dlcName = "Markarth" }
   self:register { name = "Aetherial Ascension", getNumRequiredTraits = always(9), dlcName = "Markarth" }
+  self:register { name = "Diamond's Victory", getNumRequiredTraits = always(5), dlcName = "Blackwood" }
+  self:register { name = "Heartland Conqueror", getNumRequiredTraits = always(7), dlcName = "Blackwood" }
+  self:register { name = "Hist Whisperer", getNumRequiredTraits = always(3), dlcName = "Blackwood" }
+  self:register { name = "Iron Flask", getNumRequiredTraits = always(5), dlcName = "Fargrave" }
+  self:register { name = "Deadlands Demolisher", getNumRequiredTraits = always(7), dlcName = "The Deadlands" }
+  self:register { name = "Wretched Vitality", getNumRequiredTraits = always(5), dlcName = "The Deadlands" }
 end
 
 CanICraftThis.EqSet:registerAll()
