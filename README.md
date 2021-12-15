@@ -16,6 +16,7 @@ is available on the [addon's page on esoui.com][esoui].
 
 * Add any new item sets to the list in `Data/EqSet.lua`.
 * Set the maximum compatible API version (the second number on the `APIVersion` line in `CanICraftThis.txt`) to the latest ESO API version as per [this list][apiversions].
+* Test that the addon works as expected.
 * Publish a release by following steps above.
 
 ## License
