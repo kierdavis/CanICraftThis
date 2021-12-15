@@ -6,7 +6,7 @@
 ## Title: Can I Craft This?
 ## Description: Easily see whether you have all knowledge and materials required for a writ before opening it.
 ## Author: always.ada
-## APIVersion: 100033 100034
+## APIVersion: 100033 101032
 ## AddOnVersion: 7
 ## SavedVariables: CanICraftThisVars
 
